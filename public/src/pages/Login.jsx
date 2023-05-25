@@ -31,12 +31,11 @@ const Login = () => {
 
         if (handleValidation()) {
             // Pull values from state
-            const { username, email, password } = values;
+            const { username, password } = values;
             
             // Send request to server
             const { data } = await axios.post(login_route, {
                 username,
-                email,
                 password
             });
 
@@ -56,13 +55,10 @@ const Login = () => {
     };
 
     const handleValidation = () => {
-        const { username, email, password } = values;
+        const { username, password } = values;
 
         if (username.length < 3) {
             toast.error('Username needs to be more than 3 characters', toast_options);
-            return false;
-        } else if (email === '') {
-            toast.error('Email is required', toast_options);
             return false;
         } else if (password.length < 5) {
             toast.error('Password needs to be more than 5 characters', toast_options);
@@ -88,12 +84,6 @@ const Login = () => {
                         type="text"
                         placeholder="UserName"
                         name="username"
-                        onChange={event => handleChange(event)}
-                    />
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        name="email"
                         onChange={event => handleChange(event)}
                     />
                     <input
