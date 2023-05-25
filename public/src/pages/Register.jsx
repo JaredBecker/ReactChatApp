@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import axios from 'axios';
 import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Logo from '../assets/logo.svg';
+import { register_route } from '../utils/APIRoutes';
 
 const Register = () => {
     const [values, setValues] = useState({
@@ -19,21 +21,28 @@ const Register = () => {
         position: 'bottom-right',
         autoClose: 3500,
         pauseOnHover: true,
-        draggable: true, 
+        draggable: true,
         theme: 'dark',
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         if (handleValidation()) {
-            console.log('validated');
+            const { username, email, password, confirm_password } = values;
+            console.log(register_route);
+            const { data } = await axios.post(register_route, {
+                username,
+                email,
+                password,
+                confirm_password
+            });
         }
     };
 
     const handleValidation = () => {
-        const {username, email, password, confirm_password} = values;
-        
+        const { username, email, password, confirm_password } = values;
+
         if (username.length < 3) {
             toast.error('Username needs to be more than 3 characters', toast_options);
             return false;
@@ -43,7 +52,7 @@ const Register = () => {
         } else if (password.length < 5) {
             toast.error('Password needs to be more than 5 characters', toast_options);
             return false;
-        } else  if (password !== confirm_password) {
+        } else if (password !== confirm_password) {
             toast.error('Passwords do no match', toast_options);
             return false;
         }
@@ -52,7 +61,7 @@ const Register = () => {
     };
 
     const handleChange = (event) => {
-        setValues({...values, [event.target.name]: event.target.value})
+        setValues({ ...values, [event.target.name]: event.target.value })
     };
 
     return (
