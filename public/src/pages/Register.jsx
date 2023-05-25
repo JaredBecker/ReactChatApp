@@ -1,19 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import styled from 'styled-components';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Logo from '../assets/logo.svg';
 
 const Register = () => {
+    const [values, setValues] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirm_password: '',
+    });
+
+    const toast_options = {
+        position: 'bottom-right',
+        autoClose: 3500,
+        pauseOnHover: true,
+        draggable: true, 
+        theme: 'dark',
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        alert('form');
-    }
+        
+        if (handleValidation()) {
+            console.log('validated');
+        }
+    };
+
+    const handleValidation = () => {
+        const {username, email, password, confirm_password} = values;
+        
+        if (username.length < 3) {
+            toast.error('Username needs to be more than 3 characters', toast_options);
+            return false;
+        } else if (email === '') {
+            toast.error('Email is required', toast_options);
+            return false;
+        } else if (password.length < 5) {
+            toast.error('Password needs to be more than 5 characters', toast_options);
+            return false;
+        } else  if (password !== confirm_password) {
+            toast.error('Passwords do no match', toast_options);
+            return false;
+        }
+
+        return true;
+    };
 
     const handleChange = (event) => {
-        alert(event)
-    }
+        setValues({...values, [event.target.name]: event.target.value})
+    };
+
     return (
         <>
             <FormContainer>
@@ -50,6 +91,7 @@ const Register = () => {
                     <span>Already have an account? <Link to="/login">Login.</Link></span>
                 </form>
             </FormContainer>
+            <ToastContainer />
         </>
     )
 }
