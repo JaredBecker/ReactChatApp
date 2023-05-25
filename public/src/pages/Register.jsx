@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 import styled from 'styled-components';
@@ -10,6 +10,8 @@ import Logo from '../assets/logo.svg';
 import { register_route } from '../utils/APIRoutes';
 
 const Register = () => {
+    const navigate = useNavigate();
+    
     const [values, setValues] = useState({
         username: '',
         email: '',
@@ -29,14 +31,28 @@ const Register = () => {
         event.preventDefault();
 
         if (handleValidation()) {
-            const { username, email, password, confirm_password } = values;
-            console.log(register_route);
+            // Pull values from state
+            const { username, email, password } = values;
+            
+            // Send request to server
             const { data } = await axios.post(register_route, {
                 username,
                 email,
-                password,
-                confirm_password
+                password
             });
+
+            // Check if request failed and display error
+            if (!data.status) {
+                toast.error(data.message, toast_options);
+                return;
+            }
+
+            // If post was successful, store user info in localStorage and navigate user to chat home page
+            if (data.status) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                navigate('/');
+            }
+
         }
     };
 
