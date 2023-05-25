@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', user_routes);
+app.use('/api/auth', user_routes);
 
 /**
  * Connects to the MongoDB
