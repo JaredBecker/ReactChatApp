@@ -20,11 +20,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         min: 8,
     },
-    isAvatarImageSet: {
+    is_avatar_image_set: {
         type: Boolean,
         default: false,
     },
-    avatarImage: {
+    avatar_image: {
         type: String,
         default: "",
     },
