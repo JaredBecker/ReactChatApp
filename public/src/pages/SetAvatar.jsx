@@ -26,27 +26,14 @@ const SetAvatar = () => {
         theme: 'dark',
     };
 
-    const setProfilePicture = async () => {
-        if (selected_avatar === undefined) {
-            toast.error('Please select an avatar', toast_options);
-        } else {
-            const user = await JSON.parse(localStorage.getItem('user'));
-            const { data } = await axios.post(`${avatar_route}/$${user._id}`, {
-                image: avatars[selected_avatar],
-            });
-
-            if (data.is_set) {
-                user.is_avatar_image_set = true;
-                user.avatar_img = data.image;
-                localStorage.setItem('user', JSON.stringify(user));
-                navigate('/');
-            } else {
-                toast.error('Failed to set avatar. Please try again', toast_options);
-            }
+    // Navigate user to login page if no user data is found in localStorage
+    useEffect(() => {
+        if (!localStorage.getItem('user')) {
+            navigate('/login');
         }
-    }
+    });
 
-
+    // Gets 4 random images from the multiavatar api
     useEffect(() => {
         (async () => {
             const data = [];
@@ -54,8 +41,6 @@ const SetAvatar = () => {
             for (let i = 0; i < 4; i++) {
                 const random = Math.round(Math.random() * 1000);
                 const image = await axios.get(`${api}/${random}?apikey=${process.env.REACT_APP_AVATAR_API_KEY}`);
-                
-                console.log(image);
                 const buffer = new Buffer(image.data);
 
                 data.push(buffer.toString("base64"));
@@ -66,6 +51,28 @@ const SetAvatar = () => {
         })();
     }, []);
 
+    const setProfilePicture = async () => {
+        if (selected_avatar === undefined) {
+            toast.error('Please select an avatar', toast_options);
+        } else {
+            const user = await JSON.parse(localStorage.getItem('user'));
+            console.log(selected_avatar);
+            console.log(avatars[selected_avatar]);
+            const { data } = await axios.post(`${avatar_route}/${user._id}`, {
+                image: avatars[selected_avatar],
+            });
+
+            console.log(data);
+            if (data.is_set) {
+                user.is_avatar_image_set = true;
+                user.avatar_image = data.image;
+                localStorage.setItem('user', JSON.stringify(user));
+                navigate('/');
+            } else {
+                toast.error('Failed to set avatar. Please try again', toast_options);
+            }
+        }
+    }
 
     return (
         <>

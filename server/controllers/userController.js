@@ -76,3 +76,22 @@ module.exports.login = async (req, res, next) => {
         next(error);
     }
 }
+
+module.exports.setAvatar = async (req, res, next) => {
+    try {
+        const user_id = req.params.id;
+        const avatar_image = req.body.image;
+        const user_data = User.findByIdAndUpdate(user_id, {
+            avatar_image,
+            is_avatar_img_set: true,
+        });
+     
+        return res.json({
+            is_set: user_data._update.is_avatar_img_set,
+            image: user_data._update.avatar_image,
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+}
