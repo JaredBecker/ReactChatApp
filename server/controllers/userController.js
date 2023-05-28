@@ -27,7 +27,7 @@ module.exports.register = async (req, res, next) => {
         }
 
         // Encrypt the password
-        const hashed_password = await bcrypt.hash(password, 10).toString();
+        const hashed_password = await bcrypt.hash(password, 10).then((hash) => hash);
 
         // Create the user in the DB
         const user = await User.create({
